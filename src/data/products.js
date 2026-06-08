@@ -203,4 +203,9 @@ export const products = [
     priceOnly: true,
     isCustom: true,
   },
+  { id: "sambel-hijau", name: "Sambel Hijau", category: "buah-potong", price: 12000, image: "/images/fruit-sando.jpg", priceOnly: true },
+  { id: "jagung-manis", name: "Jagung Manis", category: "buah-potong", price: 12000, image: "/images/fruit-sando.jpg", priceOnly: true },
+  { id: "sambal-iwak", name: "Sambal Iwak", category: "buah-potong", price: 15000, image: "/images/fruit-sando.jpg", priceOnly: true },
+  { id: "kacang", name: "Kacang", category: "buah-potong", price: 10000, image: "/images/fruit-sando.jpg", priceOnly: true },
+  { id: "bayam", name: "Bayam", category: "buah-potong", price: 10000, image: "/images/fruit-sando.jpg", priceOnly: true },
 ];
