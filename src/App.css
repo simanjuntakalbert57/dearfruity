@@ -230,6 +230,8 @@ body {
   margin: 0 auto;
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: 24px;
   margin-bottom: 16px;
 }
 
@@ -237,6 +239,7 @@ body {
   display: flex;
   align-items: center;
   gap: 18px;
+  flex-shrink: 0;
 }
 
 .categories-title {
@@ -259,8 +262,9 @@ body {
 
 .categories-list {
   display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 4px;
 }
 
 .category-card {
@@ -280,6 +284,7 @@ body {
   padding: 10px 12px;
   transition: all 0.2s;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .category-card.active {
