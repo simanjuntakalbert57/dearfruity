@@ -82,8 +82,13 @@ function MenuPage({ navigate, cartItems, favorites, toggleFavorite, addToCart, f
               {categories.map((c) => (
                 <button
                   key={c.key}
+                  type="button"
                   className={`category-card ${activeCategory === c.key ? "active" : ""}`}
-                  onClick={() => setActiveCategory(c.key)}
+                  onClick={() => {
+                    setShowMenu(8);
+                    setSearch("");
+                    setActiveCategory(c.key);
+                  }}
                 >
                   <span className="category-icon">{c.icon}</span>
                   <span className="category-label">{c.label}</span>
