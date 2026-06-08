@@ -681,7 +681,7 @@ export default function App() {
     if (!customerName.trim() || !customerFloor.trim()) return;
 
     try {
-      await fetch("http://localhost:3001/send-order", {
+      await fetch("https://dearfruity-production.up.railway.app/send-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
