@@ -75,12 +75,6 @@ function MenuPage({ navigate, cartItems, favorites, toggleFavorite, addToCart, f
 
         <section className="categories">
           <div className="categories-inner">
-            <div className="categories-header">
-              <h2>Kategori Jus</h2>
-              <a href="#" className="categories-link">
-                Lihat semua &gt;
-              </a>
-            </div>
             <div className="categories-list">
               {categories.map((c) => (
                 <button
