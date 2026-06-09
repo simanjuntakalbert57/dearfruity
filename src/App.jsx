@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { BrowserRouter, Routes, Route, Link, useLocation, useNavigate } from "react-router-dom";
 import { products, categories } from "./data/products";
+import Cart from "./components/Cart";
 
 function HomePage() {
   return null;
@@ -77,17 +78,18 @@ function MenuPage({ navigate, cartItems, favorites, toggleFavorite, addToCart, f
           <div className="categories-inner">
             <div className="categories-header">
               <h2>Kategori Jus</h2>
+              <Link to={`/?category=all#menu`} className="categories-link">Lihat semua &gt;</Link>
             </div>
             <div className="categories-list">
               {categories.map((c) => (
-                <button
+                <Link
                   key={c.key}
+                  to={`/?category=${c.key}#menu`}
                   className={`category-card ${activeCategory === c.key ? "active" : ""}`}
-                  onClick={() => setActiveCategory(c.key)}
                 >
                   <span className="category-icon">{c.icon}</span>
                   <span className="category-label">{c.label}</span>
-                </button>
+                </Link>
               ))}
             </div>
           </div>
@@ -291,35 +293,50 @@ function MenuPage({ navigate, cartItems, favorites, toggleFavorite, addToCart, f
                                 </div>
                               </div>
                             ) : null}
-                            <div className="menu-row">
-                              <div className="menu-size-chips">
-                                <span className="chip chip-r">R</span>
-                                <span className="chip-text">Regular</span>
+                            {p.priceOnly ? (
+                              <div className="menu-row">
+                                <div className="menu-price">Rp {formatPrice(p.price)}</div>
+                                <button
+                                  className="menu-add-btn btn-natural"
+                                  onClick={() => addToCart(p, "Regular")}
+                                >
+                                  <span className="btn-icon">🛒</span>
+                                  <span>Add to Cart</span>
+                                </button>
                               </div>
-                              <div className="menu-price">Rp {formatPrice(p.priceR)}</div>
-                              <button
-                                className="menu-add-btn btn-natural"
-                                onClick={() => addToCart(p, "Regular")}
-                              >
-                                <span className="btn-icon">🛒</span>
-                                <span>Add to Cart</span>
-                              </button>
-                            </div>
+                            ) : (
+                              <>
+                                <div className="menu-row">
+                                  <div className="menu-size-chips">
+                                    <span className="chip chip-r">R</span>
+                                    <span className="chip-text">Regular</span>
+                                  </div>
+                                  <div className="menu-price">Rp {formatPrice(p.priceR)}</div>
+                                  <button
+                                    className="menu-add-btn btn-natural"
+                                    onClick={() => addToCart(p, "Regular")}
+                                  >
+                                    <span className="btn-icon">🛒</span>
+                                    <span>Add to Cart</span>
+                                  </button>
+                                </div>
 
-                            <div className="menu-row menu-row-alt">
-                              <div className="menu-size-chips">
-                                <span className="chip chip-l">L</span>
-                                <span className="chip-text">Large</span>
-                              </div>
-                              <div className="menu-price">Rp {formatPrice(p.priceL)}</div>
-                              <button
-                                className="menu-add-btn btn-large"
-                                onClick={() => addToCart(p, "Large")}
-                              >
-                                <span className="btn-icon">🛒</span>
-                                <span>Add to Cart</span>
-                              </button>
-                            </div>
+                                <div className="menu-row menu-row-alt">
+                                  <div className="menu-size-chips">
+                                    <span className="chip chip-l">L</span>
+                                    <span className="chip-text">Large</span>
+                                  </div>
+                                  <div className="menu-price">Rp {formatPrice(p.priceL)}</div>
+                                  <button
+                                    className="menu-add-btn btn-large"
+                                    onClick={() => addToCart(p, "Large")}
+                                  >
+                                    <span className="btn-icon">🛒</span>
+                                    <span>Add to Cart</span>
+                                  </button>
+                                </div>
+                              </>
+                            )}
                           </>
                         )}
                       </div>
@@ -497,6 +514,8 @@ function CartPage({ navigate, cartItems, updateQty, removeFromCart, formatPrice,
 }
 
 export default function App() {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [activeCategory, setActiveCategory] = useState("single-jus");
   const [cartItems, setCartItems] = useState([]);
   const [checkoutStep, setCheckoutStep] = useState(null);
@@ -511,8 +530,12 @@ export default function App() {
   const [heroSlide, setHeroSlide] = useState(0);
   const [search, setSearch] = useState("");
   const menuSectionRef = useRef(null);
-  const location = useLocation();
-  const navigate = useNavigate();
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const cat = params.get("category");
+    if (cat) setActiveCategory(cat);
+  }, [location.search]);
 
   const heroSlides = [
     {
@@ -723,12 +746,12 @@ export default function App() {
               {mobileMenuOpen ? "✕" : "☰"}
             </button>
 
-            <button
+            <Link
+              to="/cart"
               className="cart-btn"
-              onClick={() => navigate("/cart")}
             >
               🛒 <span>Cart ({cartItems.length})</span>
-            </button>
+            </Link>
           </div>
         </div>
       </header>
@@ -765,25 +788,11 @@ export default function App() {
         <Route
           path="/cart"
           element={
-            <CartPage
-              navigate={navigate}
-              cartItems={cartItems}
-              updateQty={updateQty}
-              removeFromCart={removeFromCart}
-              formatPrice={formatPrice}
-              checkoutStep={checkoutStep}
-              setCheckoutStep={setCheckoutStep}
-              startCheckout={startCheckout}
-              customerName={customerName}
-              setCustomerName={setCustomerName}
-              customerFloor={customerFloor}
-              setCustomerFloor={setCustomerFloor}
-              submitOrder={submitOrder}
-              clearCart={clearCart}
-              subtotal={subtotal}
-              ongkir={ongkir}
-              total={total}
-            />
+            <div className="cart-page-placeholder">
+              <h2>Keranjang Belanja</h2>
+              <p>Keranjang lagi kosong. Ayo pesan!</p>
+              <Link to="/" className="btn-primary">Lihat Menu</Link>
+            </div>
           }
         />
         <Route path="*" element={<div>Not Found</div>} />
@@ -816,10 +825,10 @@ export default function App() {
             <div>
               <h4 className="modern-footer-title">Kategori Favorit</h4>
               <ul className="modern-footer-links">
-                <li><a href="#single-jus">Single Jus</a></li>
-                <li><a href="#mix-jus">Mix Jus</a></li>
-                <li><a href="#sop-buah">Sop Buah</a></li>
-                <li><a href="#buah-potong">Buah Potong</a></li>
+                <li><Link to="/?category=single-jus#menu">Single Jus</Link></li>
+                <li><Link to="/?category=mix-jus#menu">Mix Jus</Link></li>
+                <li><Link to="/?category=sop-buah#menu">Sop Buah</Link></li>
+                <li><Link to="/?category=buah-potong#menu">Buah Potong</Link></li>
               </ul>
               <h4 className="modern-footer-title">Bantuan</h4>
               <ul className="modern-footer-links">
