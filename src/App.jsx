@@ -82,13 +82,8 @@ function MenuPage({ navigate, cartItems, favorites, toggleFavorite, addToCart, f
               {categories.map((c) => (
                 <button
                   key={c.key}
-                  type="button"
                   className={`category-card ${activeCategory === c.key ? "active" : ""}`}
-                  onClick={() => {
-                    setShowMenu(8);
-                    setSearch("");
-                    setActiveCategory(c.key);
-                  }}
+                  onClick={() => setActiveCategory(c.key)}
                 >
                   <span className="category-icon">{c.icon}</span>
                   <span className="category-label">{c.label}</span>
@@ -686,7 +681,7 @@ export default function App() {
     if (!customerName.trim() || !customerFloor.trim()) return;
 
     try {
-      await fetch("https://dearfruity-production.up.railway.app/send-order", {
+      await fetch("http://localhost:3001/send-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

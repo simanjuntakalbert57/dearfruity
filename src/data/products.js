@@ -115,7 +115,7 @@ export const products = [
   },
   // Salad Buah
   {
-    id: "salad-buah",
+    id: "salad-buah-original",
     name: "Salad Buah",
     category: "salad-buah",
     priceR: 35000,
@@ -133,7 +133,7 @@ export const products = [
     name: "Sop Buah Original",
     category: "sop-buah",
     price: 17000,
-    image: "/images/sop-buah/image8.jpg",
+    image: "/images/sop-buah/image1.jpg",
     priceOnly: true,
   },
   {
@@ -141,7 +141,7 @@ export const products = [
     name: "Sop Buah Kuah Mangga",
     category: "sop-buah",
     price: 22000,
-    image: "/images/sop-buah/image8.jpg",
+    image: "/images/sop-buah/image2.jpg",
     priceOnly: true,
   },
   {
@@ -149,7 +149,7 @@ export const products = [
     name: "Sop Buah Kuah Alpukat",
     category: "sop-buah",
     price: 22000,
-    image: "/images/sop-buah/image8.jpg",
+    image: "/images/sop-buah/image3.jpg",
     priceOnly: true,
   },
   // Buah Potong
