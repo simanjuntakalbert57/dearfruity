@@ -133,7 +133,7 @@ export const products = [
     name: "Sop Buah Original",
     category: "sop-buah",
     price: 17000,
-    image: "/images/sop-buah/image1.jpg",
+    image: "/images/sop-buah/image8.jpg",
     priceOnly: true,
   },
   {
@@ -141,7 +141,7 @@ export const products = [
     name: "Sop Buah Kuah Mangga",
     category: "sop-buah",
     price: 22000,
-    image: "/images/sop-buah/image2.jpg",
+    image: "/images/sop-buah/image8.jpg",
     priceOnly: true,
   },
   {
@@ -149,7 +149,7 @@ export const products = [
     name: "Sop Buah Kuah Alpukat",
     category: "sop-buah",
     price: 22000,
-    image: "/images/sop-buah/image3.jpg",
+    image: "/images/sop-buah/image8.jpg",
     priceOnly: true,
   },
   // Buah Potong
@@ -203,9 +203,4 @@ export const products = [
     priceOnly: true,
     isCustom: true,
   },
-  { id: "sambel-hijau", name: "Sambel Hijau", category: "buah-potong", price: 12000, image: "/images/fruit-sando.jpg", priceOnly: true },
-  { id: "jagung-manis", name: "Jagung Manis", category: "buah-potong", price: 12000, image: "/images/fruit-sando.jpg", priceOnly: true },
-  { id: "sambal-iwak", name: "Sambal Iwak", category: "buah-potong", price: 15000, image: "/images/fruit-sando.jpg", priceOnly: true },
-  { id: "kacang", name: "Kacang", category: "buah-potong", price: 10000, image: "/images/fruit-sando.jpg", priceOnly: true },
-  { id: "bayam", name: "Bayam", category: "buah-potong", price: 10000, image: "/images/fruit-sando.jpg", priceOnly: true },
 ];

@@ -36,10 +36,10 @@ function MenuPage({ navigate, cartItems, favorites, toggleFavorite, addToCart, f
           </div>
         </section>
 
-        <section>
+        <section className="featured-section">
           <div className="menu-grid-inner">
             <div className="menu-grid-header">
-              <h2 className="menu-grid-title">Rekomendasi</h2>
+              <h2 className="menu-grid-title">New Product</h2>
             </div>
             <div className="menu-grid">
               <div className="featured-card">
@@ -76,10 +76,6 @@ function MenuPage({ navigate, cartItems, favorites, toggleFavorite, addToCart, f
 
         <section className="categories">
           <div className="categories-inner">
-            <div className="categories-header">
-              <h2>Kategori Jus</h2>
-              <Link to={`/?category=all#menu`} className="categories-link">Lihat semua &gt;</Link>
-            </div>
             <div className="categories-list">
               {categories.map((c) => (
                 <Link
@@ -369,7 +365,7 @@ function MenuPage({ navigate, cartItems, favorites, toggleFavorite, addToCart, f
   );
 }
 
-function CartPage({ navigate, cartItems, updateQty, removeFromCart, formatPrice, checkoutStep, setCheckoutStep, startCheckout, customerName, setCustomerName, customerFloor, setCustomerFloor, submitOrder, clearCart, subtotal, ongkir, total }) {
+function CartPage({ navigate, cartItems, updateQty, removeFromCart, formatPrice, checkoutStep, setCheckoutStep, startCheckout, customerName, setCustomerName, customerFloor, setCustomerFloor, submitOrder, clearCart, subtotal, ongkir, total, submittingOrder }) {
   if (checkoutStep === 3) {
     return (
       <div className="success-page-wrap">
@@ -399,31 +395,32 @@ function CartPage({ navigate, cartItems, updateQty, removeFromCart, formatPrice,
               <button className="btn-primary" onClick={() => navigate("/")}>Mulai Belanja</button>
             </div>
           ) : (
-            <div className="cart-items-grid">
-            {cartItems.map((item) => (
-              <div key={item.id} className="cart-item-card">
-                <div className="cart-item-image">
-                  <img src={item.image} alt={item.name} />
-                </div>
-                <div className="cart-item-info">
-                  <div className="cart-item-name">{item.name}</div>
-                  <div className="cart-item-meta">
-                    Size: {item.size}
-                    {item.sugar ? ` • ${item.sugar}` : ""}
+            <div className="cart-list-column">
+              <div className="cart-items-list">
+                {cartItems.map((item) => (
+                  <div key={item.uniqueKey} className="cart-item-card">
+                    <div className="cart-item-image">
+                      <img src={item.image} alt={item.name} />
+                    </div>
+                    <div className="cart-item-info">
+                      <div className="cart-item-name">{item.name}</div>
+                      <div className="cart-item-notes">
+                        Catatan: {[item.size, item.sugar].filter(Boolean).join(" | ") || "-"}
+                      </div>
+                      <div className="cart-item-controls">
+                        <button className="qty-btn" onClick={() => updateQty(item.uniqueKey, -1)}>-</button>
+                        <span className="qty-value">{item.qty}</span>
+                        <button className="qty-btn" onClick={() => updateQty(item.uniqueKey, 1)}>+</button>
+                      </div>
+                    </div>
+                    <div className="cart-item-right">
+                      <div className="cart-item-price">Rp{formatPrice(item.price * item.qty)}</div>
+                      <button className="cart-item-remove" onClick={() => removeFromCart(item.uniqueKey)}>Hapus</button>
+                    </div>
                   </div>
-                  <div className="cart-item-controls">
-                    <button className="qty-btn" onClick={() => updateQty(item.id, -1)}>-</button>
-                    <span className="qty-value">{item.qty}</span>
-                    <button className="qty-btn" onClick={() => updateQty(item.id, 1)}>+</button>
-                  </div>
-                </div>
-                <div className="cart-item-right">
-                  <div className="cart-item-price">Rp{formatPrice(item.price * item.qty)}</div>
-                  <button className="cart-item-remove" onClick={() => removeFromCart(item.id)}>Hapus</button>
-                </div>
+                ))}
               </div>
-            ))}
-          </div>
+            </div>
         )}
       </div>
 
@@ -489,13 +486,25 @@ function CartPage({ navigate, cartItems, updateQty, removeFromCart, formatPrice,
               <h4>Konfirmasi & Bayar</h4>
               <div className="order-summary">
                 {cartItems.map((item) => (
-                  <div key={item.id} className="order-item">
-                    <span>{item.name} x{item.qty}</span>
-                    <span>Rp{formatPrice(item.price * item.qty)}</span>
+                  <div key={item.uniqueKey} className="order-item">
+                    <div className="order-item-main">
+                      <span className="order-item-name">{item.name}</span>
+                      <span className="order-item-qty">x{item.qty}</span>
+                      <span className="order-item-price">Rp{formatPrice(item.price * item.qty)}</span>
+                    </div>
+                    <div className="order-item-note">
+                      Catatan: {[item.size, item.sugar].filter(Boolean).join(" | ") || "-"}
+                    </div>
                   </div>
                 ))}
               </div>
-              <button className="btn-primary" onClick={submitOrder}>Bayar Sekarang</button>
+              <button
+                className="btn-primary"
+                onClick={submitOrder}
+                disabled={submittingOrder}
+              >
+                {submittingOrder ? "Mengirim Pesanan..." : "Pesan Sekarang"}
+              </button>
               <button className="btn-secondary" onClick={() => setCheckoutStep(1)}>Kembali</button>
             </div>
           ) : null}
@@ -521,6 +530,7 @@ export default function App() {
   const [checkoutStep, setCheckoutStep] = useState(null);
   const [customerName, setCustomerName] = useState("");
   const [customerFloor, setCustomerFloor] = useState("");
+  const [submittingOrder, setSubmittingOrder] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [favorites, setFavorites] = useState([]);
   const [customFruits, setCustomFruits] = useState({});
@@ -601,10 +611,7 @@ export default function App() {
     const selectedAddOns = product.addOnPrice
       ? menuOptions[`${product.id}-addOns`]
       : null;
-    const selectedSugar =
-      !product.hasSize && !product.hasVariant && !product.addOnOptions && !product.priceOnly && !product.isCustom
-        ? menuOptions[`${product.id}-sugar`]
-        : null;
+    const selectedSugar = menuOptions[`${product.id}-sugar`] || null;
 
     let displaySize = size;
     if (product.hasSize) {
@@ -614,12 +621,6 @@ export default function App() {
     }
 
     let displayName = product.name;
-    const parts = [product.name];
-    if (selectedSugar) parts.push(selectedSugar);
-    if (customLabel) parts.push(customLabel);
-    if (selectedVariant) parts.push(selectedVariant);
-    if (selectedAddOns) parts.push(`+ ${selectedAddOns}`);
-    displayName = parts.join(" | ");
 
     const addOns = selectedAddOns ? product.addOnPrice : 0;
     const finalPrice = price + addOns;
@@ -669,11 +670,11 @@ export default function App() {
     );
   };
 
-  const updateQty = (id, delta) => {
+  const updateQty = (uniqueKey, delta) => {
     setCartItems((prev) =>
       prev
         .map((item) =>
-          item.id === id
+          item.uniqueKey === uniqueKey
             ? { ...item, qty: Math.max(1, item.qty + delta) }
             : item
         )
@@ -681,8 +682,8 @@ export default function App() {
     );
   };
 
-  const removeFromCart = (id) => {
-    setCartItems((prev) => prev.filter((item) => item.id !== id));
+  const removeFromCart = (uniqueKey) => {
+    setCartItems((prev) => prev.filter((item) => item.uniqueKey !== uniqueKey));
   };
 
   const clearCart = () => {
@@ -702,7 +703,9 @@ export default function App() {
 
   const submitOrder = async () => {
     if (!customerName.trim() || !customerFloor.trim()) return;
+    if (submittingOrder) return;
 
+    setSubmittingOrder(true);
     try {
       await fetch("http://localhost:3001/send-order", {
         method: "POST",
@@ -720,6 +723,7 @@ export default function App() {
 
     setCartItems([]);
     setCheckoutStep(3);
+    setSubmittingOrder(false);
   };
 
   return (
@@ -788,11 +792,26 @@ export default function App() {
         <Route
           path="/cart"
           element={
-            <div className="cart-page-placeholder">
-              <h2>Keranjang Belanja</h2>
-              <p>Keranjang lagi kosong. Ayo pesan!</p>
-              <Link to="/" className="btn-primary">Lihat Menu</Link>
-            </div>
+            <CartPage
+              navigate={navigate}
+              cartItems={cartItems}
+              updateQty={updateQty}
+              removeFromCart={removeFromCart}
+              formatPrice={formatPrice}
+              checkoutStep={checkoutStep}
+              setCheckoutStep={setCheckoutStep}
+              startCheckout={startCheckout}
+              customerName={customerName}
+              setCustomerName={setCustomerName}
+              customerFloor={customerFloor}
+              setCustomerFloor={setCustomerFloor}
+              submitOrder={submitOrder}
+              clearCart={clearCart}
+              subtotal={subtotal}
+              ongkir={ongkir}
+              total={total}
+              submittingOrder={submittingOrder}
+            />
           }
         />
         <Route path="*" element={<div>Not Found</div>} />
