@@ -28,7 +28,7 @@ export default function Cart() {
           {items.map((item) => (
             <div key={item.cartId} className="cart-card">
               <div className="cart-card__media">
-                <span className="cart-card__emoji">{item.emoji}</span>
+                <img src={item.image} alt={item.name} />
               </div>
 
               <div className="cart-card__body">

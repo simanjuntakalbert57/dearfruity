@@ -115,7 +115,7 @@ export const products = [
   },
   // Salad Buah
   {
-    id: "salad-buah",
+    id: "salad-buah-original",
     name: "Salad Buah",
     category: "salad-buah",
     priceR: 35000,
